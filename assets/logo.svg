@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <circle cx="200" cy="200" r="195" fill="#2D7873"/>
+  <text x="200" y="265" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="220" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-8">GO</text>
+  <polygon points="305,135 360,135 360,115 395,150 360,185 360,165 305,165" fill="#FFFFFF"/>
+</svg>
