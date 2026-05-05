@@ -1747,3 +1747,40 @@ body {
   background: var(--primary);
   transform: translateY(-3px);
 }
+
+/* ===== BOTÓN SISTEMA INTERNO ===== */
+.btn-cta-internal {
+  background: linear-gradient(135deg, #F4B860 0%, #E5A040 100%);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(244, 184, 96, 0.35);
+}
+
+.btn-cta-internal:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(244, 184, 96, 0.5);
+}
+
+.contact-card-featured {
+  background: linear-gradient(135deg, rgba(244, 184, 96, 0.15), rgba(244, 184, 96, 0.05)) !important;
+  border-color: var(--accent) !important;
+  position: relative;
+}
+
+.contact-card-featured::before {
+  content: 'OFICIAL';
+  position: absolute;
+  top: -10px;
+  right: 16px;
+  background: var(--accent);
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.contact-card-featured .contact-action {
+  color: var(--accent) !important;
+}
