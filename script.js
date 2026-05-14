@@ -2,10 +2,10 @@
    TRÁMITE GO - JavaScript completo
    Carrito + Evaluador + Promociones
    ========================================= */
-
+ 
 const WHATSAPP_NUMBER = '5216645298312';
 const COMPANY_EMAIL = 'tramitesgomx@gmail.com';
-
+ 
 // Catálogo de servicios
 const SERVICIOS = {
   'doble-nacionalidad': { nombre: 'Doble Nacionalidad', precio: 0, icono: '🌎' },
@@ -18,30 +18,30 @@ const SERVICIOS = {
   'pack-mex-visa': { nombre: 'Paquete: Pasaporte Mexicano + Visa B1/B2', precio: 1700, icono: '🎁' },
   'pack-visa-sentri': { nombre: 'Paquete: Visa B1/B2 + SENTRI', precio: 2000, icono: '🎁' }
 };
-
+ 
 // ========== MENÚ MÓVIL ==========
 document.addEventListener('DOMContentLoaded', () => {
   const menuToggle = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
-
+ 
   if (menuToggle) {
     menuToggle.addEventListener('click', () => {
       navMenu.classList.toggle('active');
     });
   }
-
+ 
   document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', () => navMenu.classList.remove('active'));
   });
-
+ 
   // Botón carrito
   const cartBtn = document.getElementById('cartBtn');
   if (cartBtn) cartBtn.addEventListener('click', abrirCarrito);
-
+ 
   actualizarCarritoUI();
   console.log('%c🚀 Trámite GO cargado correctamente', 'color:#2D7873;font-size:14px;font-weight:bold;');
 });
-
+ 
 // ========== PROMOCIONES ROTATIVAS ==========
 const PROMOCIONES = [
   { emoji: '🎉', text: '<strong>Promoción de lanzamiento:</strong> Evaluación inicial sin costo en cualquier trámite' },
@@ -52,7 +52,7 @@ const PROMOCIONES = [
   { emoji: '🇺🇸', text: '<strong>Pasaporte Americano $1,000 MXN</strong> (antes $1,300) · Promoción del mes' },
   { emoji: '💚', text: '<strong>Visa Humanitaria $1,500 MXN</strong> (antes $1,700) · Promoción del mes' }
 ];
-
+ 
 let promoIdx = 0;
 setInterval(() => {
   const banner = document.getElementById('promoBanner');
@@ -66,25 +66,25 @@ setInterval(() => {
     banner.style.opacity = '1';
   }, 500);
 }, 5000);
-
+ 
 // ========== CARRITO DE COMPRA ==========
 let carrito = JSON.parse(localStorage.getItem('tramitego_cart') || '[]');
-
+ 
 function guardarCarrito() {
   localStorage.setItem('tramitego_cart', JSON.stringify(carrito));
   actualizarCarritoUI();
 }
-
+ 
 function agregarAlCarrito(servicioId) {
   const servicio = SERVICIOS[servicioId];
   if (!servicio) return;
-
+ 
   // Si solo tiene cotización personalizada, mandar a cotizar
   if (servicio.precio === 0) {
     cotizarServicio(servicioId);
     return;
   }
-
+ 
   const existe = carrito.find(item => item.id === servicioId);
   if (existe) {
     existe.cantidad += 1;
@@ -96,13 +96,13 @@ function agregarAlCarrito(servicioId) {
   guardarCarrito();
   setTimeout(() => abrirCarrito(), 600);
 }
-
+ 
 function quitarDelCarrito(servicioId) {
   carrito = carrito.filter(item => item.id !== servicioId);
   guardarCarrito();
   renderCarrito();
 }
-
+ 
 function cambiarCantidad(servicioId, delta) {
   const item = carrito.find(i => i.id === servicioId);
   if (!item) return;
@@ -110,11 +110,11 @@ function cambiarCantidad(servicioId, delta) {
   guardarCarrito();
   renderCarrito();
 }
-
+ 
 function calcularTotal() {
   return carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
 }
-
+ 
 function actualizarCarritoUI() {
   const count = carrito.reduce((s, i) => s + i.cantidad, 0);
   const cartCount = document.getElementById('cartCount');
@@ -123,22 +123,22 @@ function actualizarCarritoUI() {
     cartCount.style.display = count > 0 ? 'flex' : 'none';
   }
 }
-
+ 
 function renderCarrito() {
   const container = document.getElementById('cartItems');
   const empty = document.getElementById('cartEmpty');
   const footer = document.getElementById('cartFooter');
-
+ 
   if (carrito.length === 0) {
     container.innerHTML = '';
     empty.style.display = 'block';
     footer.style.display = 'none';
     return;
   }
-
+ 
   empty.style.display = 'none';
   footer.style.display = 'block';
-
+ 
   container.innerHTML = carrito.map(item => `
     <div class="cart-item">
       <div class="cart-item-icon">${item.icono}</div>
@@ -155,21 +155,21 @@ function renderCarrito() {
       <div class="cart-item-total">$${(item.precio * item.cantidad).toLocaleString('es-MX')}</div>
     </div>
   `).join('');
-
+ 
   document.getElementById('cartTotal').textContent = `$${calcularTotal().toLocaleString('es-MX')} MXN`;
 }
-
+ 
 function abrirCarrito() {
   renderCarrito();
   document.getElementById('cartModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
+ 
 function cerrarCarrito() {
   document.getElementById('cartModal').classList.remove('open');
   document.body.style.overflow = '';
 }
-
+ 
 // ========== COTIZACIÓN (servicios sin precio fijo) ==========
 function cotizarServicio(servicioId) {
   const servicio = SERVICIOS[servicioId];
@@ -179,7 +179,7 @@ function cotizarServicio(servicioId) {
   );
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${mensaje}`, '_blank');
 }
-
+ 
 // ========== CHECKOUT ==========
 function abrirCheckout() {
   if (carrito.length === 0) return;
@@ -188,12 +188,12 @@ function abrirCheckout() {
   document.getElementById('checkoutModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
+ 
 function cerrarCheckout() {
   document.getElementById('checkoutModal').classList.remove('open');
   document.body.style.overflow = '';
 }
-
+ 
 function renderCheckoutResumen() {
   const items = document.getElementById('checkoutItems');
   items.innerHTML = carrito.map(item => `
@@ -204,7 +204,7 @@ function renderCheckoutResumen() {
   `).join('');
   document.getElementById('checkoutTotal').textContent = `$${calcularTotal().toLocaleString('es-MX')} MXN`;
 }
-
+ 
 function procesarPago(e) {
   e.preventDefault();
   const nombre = document.getElementById('ckNombre').value.trim();
@@ -213,7 +213,7 @@ function procesarPago(e) {
   const ciudad = document.getElementById('ckCiudad').value.trim();
   const notas = document.getElementById('ckNotas').value.trim();
   const metodo = document.querySelector('input[name="payment"]:checked').value;
-
+ 
   // Construir mensaje detallado
   let mensaje = `🛒 *NUEVA SOLICITUD - Trámite GO*\n\n`;
   mensaje += `👤 *Cliente:* ${nombre}\n`;
@@ -228,7 +228,7 @@ function procesarPago(e) {
   mensaje += `💳 *Método de pago preferido:* ${metodo === 'whatsapp' ? 'Confirmación por WhatsApp' : 'Transferencia bancaria'}\n`;
   if (notas) mensaje += `\n📝 *Notas:* ${notas}\n`;
   mensaje += `\n¡Espero su confirmación! Gracias.`;
-
+ 
   // Guardar pedido localmente
   const pedido = {
     fecha: new Date().toISOString(),
@@ -238,11 +238,13 @@ function procesarPago(e) {
     metodo,
     // Datos planos para que el sistema interno los reciba como candidato
     nombre, whatsapp, correo, ciudad, notas,
-    servicio: carrito.length > 0 ? carrito[0].nombre : 'Múltiple',
+    // servicio = ID del primer item del carrito (ej. 'visa-b1b2') para que el sistema lo mapee al codigo
+    servicio: carrito.length > 0 ? carrito[0].id : '',
+    nombreServicio: carrito.length > 0 ? carrito[0].nombre : 'Múltiple',
     serviciosLista: carrito.map(i => i.nombre).join(', '),
     origen: 'carrito-checkout-sitio-web'
   };
-
+ 
   // Registrar como candidato en sistema interno
   if (typeof sincronizarLead === 'function') {
     sincronizarLead(pedido).catch(err => console.warn('Sync:', err));
@@ -252,20 +254,20 @@ function procesarPago(e) {
     pedidos.push(pedido);
     localStorage.setItem('tramitego_pedidos', JSON.stringify(pedidos));
   } catch(e) {}
-
+ 
   console.log('🟢 Nuevo pedido:', pedido);
-
+ 
   // Abrir WhatsApp con el mensaje
   // El cliente va DIRECTO a WhatsApp (registro silencioso ya hecho arriba via sincronizarLead)
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`, '_blank');
-
+ 
   // Limpiar carrito y cerrar modal
   carrito = [];
   guardarCarrito();
   cerrarCheckout();
   mostrarToast('✅ ¡Solicitud enviada! Te contactaremos por WhatsApp.');
 }
-
+ 
 // ========== TOAST DE NOTIFICACIÓN ==========
 function mostrarToast(mensaje) {
   const toast = document.createElement('div');
@@ -278,11 +280,11 @@ function mostrarToast(mensaje) {
     setTimeout(() => toast.remove(), 300);
   }, 2800);
 }
-
+ 
 // ========== EVALUADOR ==========
 let userData = { nombre: '', whatsapp: '', correo: '', edad: '', ciudad: '', ocupacion: '', urgencia: '', servicio: '', respuestas: {} };
 let currentStep = 1;
-
+ 
 const PREGUNTAS = {
   'doble-nacionalidad': [
     { p: '¿Tienes algún familiar directo (padres, abuelos) con nacionalidad extranjera?', o: ['Sí', 'No estoy seguro', 'No'] },
@@ -320,7 +322,7 @@ const PREGUNTAS = {
     { p: '¿Es tu primera visa o renovación?', o: ['Primera vez', 'Renovación'] }
   ]
 };
-
+ 
 // Configurar listeners del evaluador
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#serviceOptions .option-card').forEach(card => {
@@ -331,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
+ 
 function iniciarEvaluacion(servicioId) {
   // Ir al evaluador y pre-seleccionar el servicio
   document.getElementById('evaluador').scrollIntoView({ behavior: 'smooth' });
@@ -342,13 +344,13 @@ function iniciarEvaluacion(servicioId) {
     });
   }, 800);
 }
-
+ 
 function nextStep(step) {
   if (step === 1) {
     const nombre = document.getElementById('nombre').value.trim();
     const whatsapp = document.getElementById('whatsapp').value.trim();
     const correo = document.getElementById('correo').value.trim();
-
+ 
     if (!nombre || !whatsapp || !correo) {
       mostrarToast('⚠️ Por favor completa nombre, WhatsApp y correo');
       return;
@@ -374,25 +376,25 @@ function nextStep(step) {
   }
   goToStep(step + 1);
 }
-
+ 
 function prevStep(step) {
   goToStep(step - 1);
 }
-
+ 
 function goToStep(step) {
   document.querySelectorAll('.eval-step').forEach(s => s.classList.remove('active'));
   const target = document.querySelector(`.eval-step[data-step="${step}"]`);
   if (target) target.classList.add('active');
-
+ 
   document.querySelectorAll('.eval-progress-bar').forEach((bar, i) => {
     bar.classList.toggle('active', i < step);
   });
-
+ 
   currentStep = step;
   const card = document.getElementById('evaluatorCard');
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
-
+ 
 function cargarPreguntas() {
   const container = document.getElementById('dynamicQuestions');
   const qs = PREGUNTAS[userData.servicio] || [];
@@ -406,7 +408,7 @@ function cargarPreguntas() {
     </div>
   `).join('');
 }
-
+ 
 function seleccionarRespuesta(el, qIdx) {
   el.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -414,13 +416,13 @@ function seleccionarRespuesta(el, qIdx) {
   // Actualizar el href del botón "Ver resultado" en tiempo real
   actualizarHrefVerResultado();
 }
-
+ 
 // Construye y asigna la URL de WhatsApp al botón "Ver resultado"
 // Se llama cada vez que el usuario responde una pregunta
 function actualizarHrefVerResultado() {
   const btn = document.getElementById('btnVerResultado');
   if (!btn) return;
-
+ 
   const qs = PREGUNTAS[userData.servicio] || [];
   const respondidas = Object.keys(userData.respuestas).length;
   if (respondidas < qs.length) {
@@ -428,7 +430,7 @@ function actualizarHrefVerResultado() {
     btn.removeAttribute('target');
     return;
   }
-
+ 
   // Construir URL de WhatsApp
   const nombreServicio = (SERVICIOS[userData.servicio] && SERVICIOS[userData.servicio].nombre) || userData.servicio;
   const urgenciaTexto = {
@@ -437,9 +439,9 @@ function actualizarHrefVerResultado() {
     planeando: '🟡 Planeando (1-3 meses)',
     explorando: '🟢 Solo explorando opciones'
   }[userData.urgencia] || userData.urgencia || 'No especificada';
-
+ 
   const respuestasTexto = qs.map((q, i) => `   • ${q.p}\n     → *${userData.respuestas[i]}*`).join('\n');
-
+ 
   const mensaje =
     `🎯 *NUEVO LEAD - Trámite GO*\n` +
     `━━━━━━━━━━━━━━━━━━━\n\n` +
@@ -457,17 +459,17 @@ function actualizarHrefVerResultado() {
     `${respuestasTexto}\n\n` +
     `━━━━━━━━━━━━━━━━━━━\n` +
     `Hola, completé la evaluación en su sitio web. ¿Podrían darme orientación sobre los siguientes pasos? Gracias.`;
-
+ 
   btn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
   btn.target = '_blank';
 }
-
+ 
 // Handler del click en "Ver resultado" - el navegador maneja el href
 function clicVerResultado(e) {
   console.log('🔄 Clic en Ver resultado');
   const qs = PREGUNTAS[userData.servicio] || [];
   const respondidas = Object.keys(userData.respuestas).length;
-
+ 
   // Validar todas las preguntas respondidas
   if (respondidas < qs.length) {
     e.preventDefault();
@@ -483,17 +485,17 @@ function clicVerResultado(e) {
     }
     return false;
   }
-
+ 
   // PREVENIR navegación por defecto
   e.preventDefault();
-
+ 
   const nombreServicio = (SERVICIOS[userData.servicio] && SERVICIOS[userData.servicio].nombre) || userData.servicio;
   const lead = {
     fecha: new Date().toISOString(),
     ...userData,
     nombreServicio: nombreServicio
   };
-
+ 
   // Guardar lead localmente
   try {
     const leads = JSON.parse(localStorage.getItem('tramitego_leads') || '[]');
@@ -501,42 +503,42 @@ function clicVerResultado(e) {
     localStorage.setItem('tramitego_leads', JSON.stringify(leads));
     console.log('🟢 Lead guardado:', lead);
   } catch(err) {}
-
+ 
   // ============================================================
   // REGISTRO SILENCIOSO en sistema interno (el cliente NO lo ve)
   // ============================================================
   if (typeof sincronizarLead === 'function') {
     sincronizarLead(lead).catch(err => console.warn('Sync:', err));
   }
-
+ 
   // ============================================================
   // EL CLIENTE VA DIRECTO A WHATSAPP (como antes)
   // ============================================================
   const respuestasTexto = qs.map((q, i) => `   • ${q.p}\n     → *${userData.respuestas[i]}*`).join('\n');
-
+ 
   const mensajeWa =
     `🎯 *NUEVO LEAD - Trámite GO*\n━━━━━━━━━━━━━━━━━━━\n\n` +
     `👤 *DATOS*\n• Nombre: ${userData.nombre}\n• WhatsApp: ${userData.whatsapp}\n` +
     `• Correo: ${userData.correo}\n\n` +
     `📌 *Servicio:* ${nombreServicio}\n\n📝 *Respuestas:*\n${respuestasTexto}\n\n` +
     `Quisiera continuar con mi proceso, ¡gracias!`;
-
+ 
   const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensajeWa)}`;
-
+ 
   // Abrir WhatsApp INMEDIATAMENTE (única acción visible para el cliente)
   console.log('💬 Abriendo WhatsApp del cliente...');
   window.open(urlWhatsApp, '_blank');
-
+ 
   // Asignar URL al botón del paso 4 como respaldo
   const wppBtn = document.getElementById('whatsappResult');
   if (wppBtn) wppBtn.href = urlWhatsApp;
-
+ 
   const btnCaptura = document.getElementById('btnIrCaptura');
   if (btnCaptura) {
     btnCaptura.href = urlWhatsApp; // También va a WhatsApp para no confundir al cliente
     btnCaptura.style.display = 'none'; // Ocultar el botón de "Continuar al formulario"
   }
-
+ 
   // Mensaje al cliente
   const resultMsg = document.getElementById('resultMessage');
   if (resultMsg) {
@@ -546,19 +548,19 @@ function clicVerResultado(e) {
       Si no se abrió automáticamente, presiona el botón verde de abajo.
     `;
   }
-
+ 
   goToStep(4);
   mostrarToast('✅ ¡Conectándote por WhatsApp!');
   return false;
 }
-
+ 
 function evaluate() {
   console.log('🔄 Evaluate iniciado', userData);
   try {
     const qs = PREGUNTAS[userData.servicio] || [];
     const respondidas = Object.keys(userData.respuestas).length;
     console.log(`Respuestas: ${respondidas} / ${qs.length}`);
-
+ 
     // Validar que todas las preguntas estén respondidas
     if (respondidas < qs.length) {
       mostrarToast(`⚠️ Falta(n) ${qs.length - respondidas} pregunta(s) por responder`);
@@ -573,9 +575,9 @@ function evaluate() {
       }
       return;
     }
-
+ 
     const nombreServicio = (SERVICIOS[userData.servicio] && SERVICIOS[userData.servicio].nombre) || userData.servicio || 'Trámite no especificado';
-
+ 
     // Mapeo amigable de urgencia
     const urgenciaTexto = {
       urgente: '🔴 URGENTE (próximas 2 semanas)',
@@ -583,10 +585,10 @@ function evaluate() {
       planeando: '🟡 Planeando (1-3 meses)',
       explorando: '🟢 Solo explorando opciones'
     }[userData.urgencia] || userData.urgencia || 'No especificada';
-
+ 
     // Construir mensaje completo y profesional para el asesor
     const respuestasTexto = qs.map((q, i) => `   • ${q.p}\n     → *${userData.respuestas[i] || 'Sin respuesta'}*`).join('\n');
-
+ 
     const mensaje =
       `🎯 *NUEVO LEAD - Trámite GO*\n` +
       `━━━━━━━━━━━━━━━━━━━\n\n` +
@@ -604,10 +606,10 @@ function evaluate() {
       `${respuestasTexto}\n\n` +
       `━━━━━━━━━━━━━━━━━━━\n` +
       `Hola, completé la evaluación en su sitio web. ¿Podrían darme orientación sobre los siguientes pasos? Gracias.`;
-
+ 
     const mensajeCodificado = encodeURIComponent(mensaje);
     const urlWhatsApp = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeCodificado}`;
-
+ 
     // Guardar el lead localmente
     const leadCompleto = {
       fecha: new Date().toISOString(),
@@ -621,17 +623,17 @@ function evaluate() {
       localStorage.setItem('tramitego_leads', JSON.stringify(leads));
       console.log('🟢 Lead guardado localmente:', leadCompleto);
     } catch (e) { console.warn('No se pudo guardar lead local:', e); }
-
+ 
     // SINCRONIZACIÓN CON BACKEND
     // Aquí enviamos los datos al sistema interno o webhook
     sincronizarLead(leadCompleto).catch(err => console.warn('Sync falló:', err));
-
+ 
     // Asignar URL al botón del paso 4
     const whatsappResultBtn = document.getElementById('whatsappResult');
     if (whatsappResultBtn) {
       whatsappResultBtn.href = urlWhatsApp;
     }
-
+ 
     // Actualizar mensaje de resultado
     const resultMsg = document.getElementById('resultMessage');
     if (resultMsg) {
@@ -641,26 +643,54 @@ function evaluate() {
         `<strong>${nombreServicio}</strong> y te dará una respuesta personalizada.<br><br>` +
         `Si WhatsApp no se abrió automáticamente, presiona el botón de abajo.`;
     }
-
+ 
     // Abrir WhatsApp INMEDIATAMENTE (sin setTimeout para evitar popup blocker)
     const ventana = window.open(urlWhatsApp, '_blank');
-
+ 
     // Ir al paso 4
     goToStep(4);
-
+ 
     // Si el navegador bloqueó el popup, ofrecer click manual destacado
     if (!ventana || ventana.closed === undefined ? false : ventana.closed) {
       mostrarToast('👉 Haz clic en el botón verde para abrir WhatsApp');
     } else {
       mostrarToast('✅ ¡Mensaje listo en WhatsApp!');
     }
-
+ 
   } catch (err) {
     console.error('❌ Error en evaluate():', err);
     mostrarToast('⚠️ Error: ' + (err.message || 'Intenta de nuevo'));
   }
 }
-
+ 
+// =====================================================
+// MAPEO de IDs del sitio (con guiones) -> códigos del sistema (con guiones bajos)
+// El catálogo tramites_catalogo en Supabase usa estos códigos exactos.
+// Los paquetes no tienen equivalente 1:1 -> se mandan como 'otro' (se registra el cliente
+// pero no se asocia a un trámite específico; queda en notas el detalle del paquete).
+// =====================================================
+const TRAMITE_CODIGO_MAP = {
+  'doble-nacionalidad': 'doble_nacionalidad',
+  'crba': 'crba',
+  'visa-humanitaria': 'visa_humanitaria',
+  'pasaporte-americano': 'pasaporte_us',
+  'pasaporte-mexicano': 'pasaporte_mx',
+  'sentri': 'sentri',
+  'visa-b1b2': 'visa_b1b2',
+  'pack-mex-visa': 'otro',
+  'pack-visa-sentri': 'otro'
+};
+ 
+function obtenerCodigoTramite(servicioId) {
+  if (!servicioId) return '';
+  // Si ya viene en formato del sistema (con _), regresarlo tal cual
+  if (TRAMITE_CODIGO_MAP[servicioId]) return TRAMITE_CODIGO_MAP[servicioId];
+  // Si ya es un código válido, regresarlo
+  const valoresValidos = Object.values(TRAMITE_CODIGO_MAP);
+  if (valoresValidos.includes(servicioId)) return servicioId;
+  return 'otro';
+}
+ 
 // =====================================================
 // SINCRONIZACIÓN CON SISTEMA INTERNO TRÁMITE GO
 // Endpoint: https://tramite-go.vercel.app/api/leads
@@ -674,18 +704,24 @@ function evaluate() {
 async function sincronizarLead(lead) {
   const ENDPOINT = 'https://tramite-go.vercel.app/api/leads';
   console.log('🔄 Enviando lead al sistema interno:', lead.nombre);
-
+ 
+  // El sitio guarda el servicio como ID (ej. 'visa-b1b2') en lead.servicio
+  // Hay que mapearlo al código del catálogo del sistema (ej. 'visa_b1b2')
+  const tramiteCodigo = obtenerCodigoTramite(lead.servicio || lead.tramite || '');
+ 
   const payload = {
     nombre: lead.nombre || '',
     whatsapp: lead.whatsapp || '',
     correo: lead.correo || '',
+    ciudad: lead.ciudad || '',
+    tramite_codigo: tramiteCodigo,
     servicio: lead.nombreServicio || lead.servicio || lead.tramite || '',
     mensaje: lead.notas || lead.mensaje || construirMensajeLead(lead),
     origen: lead.origen || 'landing-publica'
   };
-
+ 
   const bodyJson = JSON.stringify(payload);
-
+ 
   // ===== MÉTODO 1: navigator.sendBeacon =====
   // No requiere CORS preflight, envía en background.
   if (navigator.sendBeacon) {
@@ -695,7 +731,7 @@ async function sincronizarLead(lead) {
       console.log('📡 sendBeacon:', ok ? 'enviado' : 'falló');
     } catch (e) { console.warn('Beacon error:', e); }
   }
-
+ 
   // ===== MÉTODO 2: fetch con text/plain (EVITA preflight) =====
   // Este es el método principal. Al usar text/plain, el navegador NO
   // hace preflight OPTIONS, así que se evita el bloqueo CORS.
@@ -706,7 +742,7 @@ async function sincronizarLead(lead) {
       body: bodyJson,
       keepalive: true
     });
-
+ 
     if (res.ok) {
       const data = await res.json().catch(() => ({}));
       console.log('✅ Lead registrado en sistema interno:', data);
@@ -717,7 +753,7 @@ async function sincronizarLead(lead) {
     }
   } catch (err) {
     console.warn('⚠️ fetch text/plain falló:', err.message);
-
+ 
     // ===== MÉTODO 3: fetch normal con application/json (último recurso) =====
     // Solo funciona si el servidor tiene CORS configurado correctamente.
     try {
@@ -735,11 +771,11 @@ async function sincronizarLead(lead) {
     } catch (e) {
       console.warn('⚠️ application/json también falló:', e.message);
     }
-
+ 
     return { success: false, error: err.message };
   }
 }
-
+ 
 // Construir mensaje detallado con respuestas del evaluador
 function construirMensajeLead(lead) {
   const partes = [];
@@ -752,8 +788,8 @@ function construirMensajeLead(lead) {
   if (lead.total) partes.push('Total: $' + lead.total + ' MXN');
   return partes.join(' | ') || 'Lead desde sitio web público';
 }
-
-
+ 
+ 
 function resetEvaluator() {
   userData = { nombre: '', whatsapp: '', correo: '', edad: '', ciudad: '', ocupacion: '', urgencia: '', servicio: '', respuestas: {} };
   ['nombre', 'whatsapp', 'correo', 'edad', 'ciudad', 'ocupacion'].forEach(id => {
@@ -766,7 +802,7 @@ function resetEvaluator() {
   document.getElementById('dynamicQuestions').innerHTML = '';
   goToStep(1);
 }
-
+ 
 // ========== ANIMACIONES SCROLL ==========
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -776,7 +812,7 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
+ 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.service-card, .testimonial-card, .blog-card, .contact-card, .step-card, .trust-bar-item').forEach(el => {
     el.style.opacity = '0';
@@ -785,7 +821,7 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(el);
   });
 });
-
+ 
 // Cerrar modales al hacer click fuera
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('modal-overlay')) {
@@ -793,7 +829,7 @@ document.addEventListener('click', (e) => {
     document.body.style.overflow = '';
   }
 });
-
+ 
 // Exponer funciones al scope global (para onclick inline)
 window.iniciarEvaluacion = iniciarEvaluacion;
 window.cotizarServicio = cotizarServicio;
@@ -812,3 +848,4 @@ window.resetEvaluator = resetEvaluator;
 window.seleccionarRespuesta = seleccionarRespuesta;
 window.clicVerResultado = clicVerResultado;
 window.actualizarHrefVerResultado = actualizarHrefVerResultado;
+ 
